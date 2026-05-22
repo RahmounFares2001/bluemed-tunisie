@@ -1,10 +1,14 @@
-import { Link } from "@tanstack/react-router";
+"use client";
+
 import { LayoutDashboard, Package, ShoppingBag, LogOut, ExternalLink } from "lucide-react";
 import { useAdminStore } from "@/store/adminStore";
 import { S } from "@/constants/strings";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function AdminSidebar() {
   const logout = useAdminStore((s) => s.logout);
+  const pathname = usePathname();
   const items = [
     { to: "/admin/dashboard", label: S.admin.nav.dashboard, icon: LayoutDashboard },
     { to: "/admin/products", label: S.admin.nav.products, icon: Package },
@@ -14,7 +18,7 @@ export function AdminSidebar() {
   return (
     <aside className="fixed inset-y-0 right-0 z-40 hidden w-64 flex-col bg-navy text-white lg:flex">
       <div className="border-b border-white/10 px-6 py-5">
-        <Link to="/" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-primary-light to-gold text-lg font-black text-navy">
             B
           </div>
@@ -28,12 +32,15 @@ export function AdminSidebar() {
       <nav className="flex-1 space-y-1 p-4">
         {items.map((it) => {
           const Icon = it.icon;
+          const isActive = pathname === it.to;
           return (
             <Link
               key={it.to}
-              to={it.to}
-              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-white/70 transition-all hover:bg-white/10 hover:text-white"
-              activeProps={{ className: "bg-gold text-navy hover:bg-gold hover:text-navy" }}
+              href={it.to}
+              className={isActive
+                ? "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold bg-gold text-navy"
+                : "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-white/70 transition-all hover:bg-white/10 hover:text-white"
+              }
             >
               <Icon size={18} /> {it.label}
             </Link>
@@ -43,7 +50,7 @@ export function AdminSidebar() {
 
       <div className="space-y-2 border-t border-white/10 p-4">
         <Link
-          to="/"
+          href="/"
           className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-bold text-white/70 transition-colors hover:bg-white/10"
         >
           <ExternalLink size={16} /> عرض المتجر
@@ -60,21 +67,26 @@ export function AdminSidebar() {
 }
 
 export function AdminMobileNav() {
+  const pathname = usePathname();
   const items = [
     { to: "/admin/dashboard", label: S.admin.nav.dashboard, icon: LayoutDashboard },
     { to: "/admin/products", label: S.admin.nav.products, icon: Package },
     { to: "/admin/orders", label: S.admin.nav.orders, icon: ShoppingBag },
   ] as const;
+
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-border bg-white lg:hidden">
       {items.map((it) => {
         const Icon = it.icon;
+        const isActive = pathname === it.to;
         return (
           <Link
             key={it.to}
-            to={it.to}
-            className="flex flex-col items-center gap-1 py-2.5 text-[10px] font-bold text-muted-foreground"
-            activeProps={{ className: "text-primary" }}
+            href={it.to}
+            className={isActive
+              ? "flex flex-col items-center gap-1 py-2.5 text-[10px] font-bold text-primary"
+              : "flex flex-col items-center gap-1 py-2.5 text-[10px] font-bold text-muted-foreground"
+            }
           >
             <Icon size={20} /> {it.label}
           </Link>
