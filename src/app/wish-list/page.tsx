@@ -12,7 +12,7 @@ import Link from "next/link";
 
 
 
-function WishlistPage() {
+export default function WishlistPage() {
   const ids = useWishlistStore((s) => s.ids);
   const products = useProductsStore((s) => s.products);
   const items = products.filter((p) => ids.includes(p.id));
